@@ -1,7 +1,7 @@
 {
   "name": "stm",
   "version": "1.0.0",
-  "description": "Reading data from STM driver",
+  "description": "Reading data from SAKUR-A STM driver",
   "main": "stm.js",
   "scripts": {
     "test": "test"
@@ -14,5 +14,10 @@
   "keywords": [
     "STM"
   ],
-  "author": "Eugene Babeshko"
+  "author": "Eugene Babeshko",
+  "dependencies": {
+    "ffi-napi": "^4.0.3",
+    "ref-array-di": "^1.2.2",
+    "ref-array-napi": "^1.2.2"
+  }  
 }
