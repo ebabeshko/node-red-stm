@@ -1,0 +1,49 @@
+<script type="text/javascript">
+    RED.nodes.registerType('stm-port',{
+        category: 'sakura',
+        color: '#ffedf7',
+        icon: "font-awesome/fa-cog",
+        defaults: {
+            name: {value:""},
+            port: {value:"",required:true},
+            cmd: {value:"ON", required: true},
+        },
+        inputs:1,
+        outputs:1,
+        label: function() {
+            return this.name||"stm port on/off";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="stm-port">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-cog"></i> Port</label>
+        <input type="text" id="node-input-port" placeholder="Port">
+    </div>  
+	<div class="form-row">
+		<label for="node-input-cmd"><i class="fa fa-toggle-on"></i> Command</label>
+		<select type="text" id="node-input-cmd" placeholder="Command">
+			<option value="ON">ON</option>
+			<option value="OFF">OFF</option>
+		</select>
+	</div>
+</script>
+
+<script type="text/html" data-help-name="stm-port">
+   <p>Allows to switch on / switch off the port.</p>
+   <h3>Node Properties</h3>
+       <dl class="message-properties">
+       <dt>Port
+           <span class="property-type">number</span>
+       </dt>
+        <dd> Number of port to be controlled. </dd>
+       <dt>Command
+           <span class="property-type">ON / OFF</span>
+       </dt>
+        <dd>Command to be sent (switch on / switch off). </dd>
+</script>
