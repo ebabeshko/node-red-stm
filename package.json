@@ -1,14 +1,15 @@
 {
   "name": "stm",
   "version": "1.0.0",
-  "description": "Reading data from SAKUR-A STM driver",
+  "description": "Data exchange with SAKUR-A STM driver",
   "main": "stm.js",
   "scripts": {
     "test": "test"
   },
   "node-red": {
     "nodes": {
-      "stm": "stm.js"
+      "stm": "stm.js",
+      "stm-port": "stm-port.js"
     }
   },
   "keywords": [
