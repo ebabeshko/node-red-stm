@@ -9,7 +9,8 @@
   "node-red": {
     "nodes": {
       "stm": "stm.js",
-      "stm-port": "stm-port.js"
+      "stm-port": "stm-port.js",
+      "stm-diag": "stm-diag.js"
     }
   },
   "keywords": [
