@@ -1,0 +1,56 @@
+<script type="text/javascript">
+    RED.nodes.registerType('stm-diag',{
+        category: 'sakura',
+        color: '#ffedf7',
+        icon: "font-awesome/fa-bolt",
+        defaults: {
+            name: {value:""},
+            address: {value:"",required:true},
+            diagobject: {value:"Port", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        label: function() {
+            return this.name||"stm diag";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="stm-diag">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-address"><i class="fa fa-link"></i> Address</label>
+        <input type="text" id="node-input-address" placeholder="Address">
+    </div>  
+	<div class="form-row">
+		<label for="node-input-diagobject"><i class="fa fa-hdd-o"></i> Type</label>
+		<select type="text" id="node-input-diagobject" placeholder="Type">
+			<option value="Port">Port</option>
+			<option value="Device">Device</option>
+		</select>
+	</div>
+</script>
+
+<script type="text/html" data-help-name="stm-diag">
+   <p>Returns port / device status.</p>
+   <h3>Node Properties</h3>
+       <dl class="message-properties">
+       <dt>Address
+           <span class="property-type">number</span>
+       </dt>
+        <dd> Port # or Device Address</dd>
+       <dt>Type
+           <span class="property-type">Port / Device</span>
+       </dt>
+        <dd>Port or Device</dd>
+ <h3>Outputs</h3>
+     <ol class="node-ports">
+             <dl class="message-properties">
+                 <dt>payload <span class="property-type">boolean</span></dt>
+                 <dd>Online status of port or device</dd>
+             </dl>
+     </ol>
+</script>
