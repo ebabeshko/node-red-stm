@@ -26,3 +26,28 @@ Node to control SAKUR-A TM driver port
   
 ![Settings](https://github.com/ebabeshko/node-red-stm/assets/63898296/692473c8-5792-406f-8ab3-15e81e26ee0d)
 
+# stm-diag
+![stm-diag](https://github.com/user-attachments/assets/f56b1dd7-f957-44b5-ae03-aea94275d605)
+
+Node to return SAKUR-A TM driver port / device status
+
+## Settings:
+- Address
+- Type
+  
+![Settings](https://github.com/user-attachments/assets/98f08792-40c3-4e1f-96b1-2b38917a24aa)
+
+# stm-write
+![stm-write](https://github.com/user-attachments/assets/4b70c217-b092-4e55-a3ee-922c27c09638)
+
+
+Node to write data to SAKUR-A TM driver
+
+## Settings:
+- KP
+- Board
+- Values
+  
+![Settings](https://github.com/user-attachments/assets/115be1ca-f9f9-423a-810c-6f64acaf2c64)
+
+
