@@ -1,0 +1,55 @@
+<script type="text/javascript">
+    RED.nodes.registerType('stm-write',{
+        category: 'sakura',
+        color: '#ffedf7',
+        icon: "font-awesome/fa-pencil",
+        defaults: {
+            name: {value:""},
+            kp: {value:"",required:true},
+            b: {value:"", required: true},
+			val: {value:"", required: true},
+        },
+        inputs:1,
+        outputs:1,
+        label: function() {
+            return this.name||"stm write";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="stm-write">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-write"><i class="fa fa-link"></i> KP</label>
+        <input type="text" id="node-input-kp" placeholder="KP">
+    </div>  
+    <div class="form-row">
+        <label for="node-input-write"><i class="fa fa-tags"></i> Board</label>
+        <input type="text" id="node-input-b" placeholder="Board">
+    </div> 
+    <div class="form-row">
+        <label for="node-input-write"><i class="fa fa-cog"></i> Values</label>
+        <input type="text" id="node-input-val" placeholder="Values">
+    </div> 		
+</script>
+
+<script type="text/html" data-help-name="stm-write">
+   <p>Allows to write values to the board of KP. Values must be comma separated</p>
+   <h3>Node Properties</h3>
+       <dl class="message-properties">
+       <dt>KP
+           <span class="property-type">number</span>
+       </dt>
+        <dd> Number of KP to write data to. </dd>
+       <dt>Board
+           <span class="property-type">number</span>
+       </dt>
+	   <dd> Number of board to write data to. </dd>
+       <dt>Value
+           <span class="property-type">number</span>
+       </dt>
+	   <dd> Value(s) to be written. </dd>
+</script>
