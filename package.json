@@ -10,7 +10,8 @@
     "nodes": {
       "stm": "stm.js",
       "stm-port": "stm-port.js",
-      "stm-diag": "stm-diag.js"
+      "stm-diag": "stm-diag.js",
+      "stm-write": "stm-write.js"      
     }
   },
   "keywords": [
