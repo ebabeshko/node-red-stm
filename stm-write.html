@@ -1,12 +1,12 @@
 <script type="text/javascript">
     RED.nodes.registerType('stm-write',{
         category: 'sakura',
-        color: '#ffedf7',
+        color: "#edc6da",
         icon: "font-awesome/fa-pencil",
         defaults: {
             name: {value:""},
             kp: {value:"",required:true},
-            b: {value:"", required: true},
+            bn: {value:"", required: true},
 			val: {value:"", required: true},
         },
         inputs:1,
@@ -23,33 +23,96 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-write"><i class="fa fa-link"></i> KP</label>
+        <label for="node-input-kp"><i class="fa fa-link"></i> KP</label>
         <input type="text" id="node-input-kp" placeholder="KP">
     </div>  
     <div class="form-row">
-        <label for="node-input-write"><i class="fa fa-tags"></i> Board</label>
-        <input type="text" id="node-input-b" placeholder="Board">
+        <label for="node-input-bn"><i class="fa fa-tags"></i> Board</label>
+        <input type="text" id="node-input-bn" placeholder="Board">
     </div> 
     <div class="form-row">
-        <label for="node-input-write"><i class="fa fa-cog"></i> Values</label>
+        <label for="node-input-val"><i class="fa fa-cog"></i> Values</label>
         <input type="text" id="node-input-val" placeholder="Values">
     </div> 		
 </script>
 
 <script type="text/html" data-help-name="stm-write">
-   <p>Allows to write values to the board of KP. Values must be comma separated</p>
-   <h3>Node Properties</h3>
-       <dl class="message-properties">
-       <dt>KP
-           <span class="property-type">number</span>
-       </dt>
-        <dd> Number of KP to write data to. </dd>
-       <dt>Board
-           <span class="property-type">number</span>
-       </dt>
-	   <dd> Number of board to write data to. </dd>
-       <dt>Value
-           <span class="property-type">number</span>
-       </dt>
-	   <dd> Value(s) to be written. </dd>
+
+    <p>
+        Writes data to the board of KP.
+    </p>
+
+    <h3>Node Properties</h3>
+
+    <dl class="message-properties">
+
+        <dt>KP
+            <span class="property-type">number</span>
+        </dt>
+        <dd>
+            Default KP number. Can be overridden by <code>msg.payload.kp</code>.
+        </dd>
+
+        <dt>Board
+            <span class="property-type">number</span>
+        </dt>
+        <dd>
+            Default board number. Can be overridden by <code>msg.payload.bn</code>.
+        </dd>
+
+        <dt>Values
+            <span class="property-type">comma separated numbers</span>
+        </dt>
+        <dd>
+            Default values written to the board when <code>msg.payload.value</code> is not supplied.
+        </dd>
+
+    </dl>
+
+    <h3>Input</h3>
+
+    <dl class="message-properties">
+
+        <dt>msg.payload.kp
+            <span class="property-type">number</span>
+        </dt>
+        <dd>
+            Optional KP number. Overrides the configured KP.
+        </dd>
+
+        <dt>msg.payload.bn
+            <span class="property-type">number</span>
+        </dt>
+        <dd>
+            Optional board number. Overrides the configured Board.
+        </dd>
+
+        <dt>msg.payload.value
+            <span class="property-type">number</span>
+        </dt>
+        <dd>
+            A single 32-bit integer value to be written.
+        </dd>
+
+    </dl>
+
+    <h3>Output</h3>
+
+    <p>
+        The original message is passed through unchanged.
+    </p>
+
+    <h3>Errors</h3>
+
+    <p>
+        The node reports errors if:
+    </p>
+
+    <ul>
+        <li>the STM data source cannot be attached;</li>
+        <li><code>msg.payload</code> is invalid;</li>
+        <li>the STM API returns an error code;</li>
+        <li>an unexpected exception occurs during processing.</li>
+    </ul>
+
 </script>

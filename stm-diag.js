@@ -1,4 +1,4 @@
-module.exports = function(RED) {
+﻿module.exports = function(RED) {
     function STM_DIAG(config) {
         RED.nodes.createNode(this, config);
         var node = this;
@@ -23,21 +23,24 @@ module.exports = function(RED) {
                 var diagobject = (config.diagobject == "Device" ? 1 : 0);
                 var address = config.address - 1;
                 if (diagobject == 1) {
-                    address = config.address;
-                    var d = libstmapi._GetDevHandleBySno(address);
-                    if (d == -1) {
-                        node.error("STM-DIAG: Device not found");
-                    } else {
-                        msg.payload = libstmapi._IsDevOnLine(d);
-                    }
+                       address = config.address;
+	                	var d = libstmapi._GetDevHandleBySno(address);
+                		if (d == -1) {
+	                    node.error("STM-DIAG: Device not found");
+                		}
+		else {
+			msg.payload = libstmapi._IsDevOnLine(d);
+		}
 
-                } else {
-                    var p = libstmapi._GetPortHandle(address);
-                    if (p == -1) {
-                        node.error("STM-DIAG: Port not found");
-                    } else {
-                        msg.payload = libstmapi._IsPortOn(p);
-                    }
+                }
+                else {
+		var p = libstmapi._GetPortHandle(address);
+                		if (p == -1) {
+	                    node.error("STM-DIAG: Port not found");
+                		}
+		else {
+			msg.payload = libstmapi._IsPortOn(p);
+		}
                 }
                 node.send(msg);
                 libstmapi._DetachDataSource();
