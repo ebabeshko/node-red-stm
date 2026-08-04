@@ -3,27 +3,62 @@ module.exports = function (RED) {
     function STM_WRITE(config) {
 
         RED.nodes.createNode(this, config);
-        var node = this;
+        const node = this;
 
-        node.on('input', function (msg) {
+        node.on("input", function (msg) {
 
             let attached = false;
             let libstmapi;
 
             try {
 
-                const ffi = require('ffi-napi');
-                const ref = require('ref-napi');
+                const ffi = require("ffi-napi");
 
                 libstmapi = ffi.Library(
-                    'stmdsrce.dll',
+                    "stmdsrce.dll",
                     {
-                        _AttachDataSource: ['bool', []],
-                        _DetachDataSource: [ref.types.void, []],
-                        _SetDataBlockEx: [
-                            'int32',
-                            ['int32', 'int32', 'int32', 'pointer', 'pointer', 'pointer', 'int32']
-                        ]
+                        _AttachDataSource: ["bool", []],
+
+                        _DetachDataSource: ["void", []],
+
+                        _SetTmValue: [
+                            "bool",
+                            [
+                                "int32",
+                                "int32",
+                                "int32",
+                                "pointer",
+                                "uchar",
+                                "bool"
+                            ]
+                        ],
+
+                        _GetDevHandleBySno: [
+                            "int32",
+                            ["int32"]
+                        ],
+
+                        _GetBlockHandle: [
+                            "int32",
+                            ["int32", "int32"]
+                        ],
+
+                        _SetBtime: [
+                            "uint32",
+                            [
+                                "int32",
+                                "int32",
+                                "pointer"
+                            ]
+                        ],
+                        _SetBpactime: [
+                            "uint32",
+                            [
+                                "int32",
+                                "int32",
+                                "uint32"
+                            ]
+                        ],
                     }
                 );
 
@@ -34,76 +69,100 @@ module.exports = function (RED) {
                     return;
                 }
 
-                var kpn = msg.payload.hasOwnProperty('kp') ? msg.payload.kp : config.kp;
-                var bn = msg.payload.hasOwnProperty('bn') ? msg.payload.bn : config.bn;
+                const payload = msg.payload || {};
 
-                var btime = Buffer.alloc(6);
+                const kpn = parseInt(
+                    payload.hasOwnProperty("kp") ? payload.kp : config.kp
+                );
 
-                var buf;
-                var temp;
+                const bn = parseInt(
+                    payload.hasOwnProperty("bn") ? payload.bn : config.bn
+                );
 
-                if (msg.payload.hasOwnProperty('value')) {
+                const idx = parseInt(
+                    payload.hasOwnProperty("idx")
+                        ? payload.idx
+                        : (config.idx || 1)
+                );
 
-                    buf = Buffer.alloc(4);
-                    buf.writeInt32LE(msg.payload.value);
-                    temp = buf;
+                let value = payload.value;
 
-                } else if (msg.payload.hasOwnProperty('NewLimit')) {
-
-                    buf = Buffer.alloc(4);
-                    buf.writeInt32LE(msg.payload.NewLimit);
-                    temp = buf;
-
-                } else {
-
-                    temp = config.val.split(",");
-
-                    buf = Buffer.alloc(temp.length * 4);
-
-                    for (let i = 0; i < temp.length; i++) {
-                        buf.writeInt32LE(parseInt(temp[i], 10), i * 4);
-                    }
+                if (value === undefined) {
+                    value = payload.NewLimit;
                 }
 
-                var num = Buffer.from([1]);
+                if (value === undefined) {
+                    value = config.val;
+                }
+
+                if (
+                    value === undefined || String(value).trim() === "" || Number.isNaN(Number(value))) {
+                    node.error("STM-WRITE: Value is not specified", msg);
+                    return;
+                }
+
+                const buf = Buffer.alloc(4);
+                buf.writeInt32LE(parseInt(value));
+
+                const kpidx = libstmapi._GetDevHandleBySno(kpn);
+
+                if (kpidx < 0) {
+                    node.error("STM-WRITE: GetDevHandleBySno returned DATASRC_DEV_ERROR", msg);
+                    return;
+                }
+
+                const bidx = libstmapi._GetBlockHandle(kpidx, bn);
+
+                if (bidx < 0) {
+                    node.error("STM-WRITE: GetBlockHandle returned DATASRC_BLOCK_ERROR", msg);
+                    return;
+                }
+
+                const ok_value = libstmapi._SetTmValue(
+                    kpidx,
+                    bidx,
+                    idx - 1,
+                    buf,
+                    4,
+                    true
+                );
+
+                if (!ok_value) {
+                    node.error("STM-WRITE: SetTmValue failed", msg);
+                    return;
+                }
+
+                const btime = Buffer.alloc(6);
 
                 var dt = new Date();
 
-                btime.writeUInt32LE(Math.round(dt / 1000), 0);
-                btime.writeUInt16LE(Math.round(dt % 1000), 4);
+		btime.writeUInt32LE(Math.floor(dt.getTime() / 1000), 0);
+		btime.writeUInt16LE(dt.getMilliseconds(), 4);
 
-                var iRes = libstmapi._SetDataBlockEx(
-                    kpn,
-                    bn,
-                    0,
-                    btime,
-                    buf,
-                    num,
-                    4
+		const ok_btime = libstmapi._SetBtime(
+                    kpidx,
+                    bidx,
+                    btime
                 );
 
-                switch (iRes) {
-
-                    case 1:
-                        node.error("STM: SetDataBlockEx returned 1 (DATASRC_ERROR)");
-                        break;
-
-                    case 2:
-                        node.error("STM: SetDataBlockEx returned 2 (DATASRC_DEV_ERROR)");
-                        break;
-
-                    case 3:
-                        node.error("STM: SetDataBlockEx returned 3 (DATASRC_BLOCK_ERROR)");
-                        break;
-
-                    case 4:
-                        node.error("STM: SetDataBlockEx returned 4 (DATASRC_TYPE_ERROR)");
-                        break;
-
-                    case 5:
-                        node.error("STM: SetDataBlockEx returned 5 (OUTBUF_ERROR)");
-                        break;
+                if (ok_btime === 0) {
+                    node.error("STM-WRITE: SetBtime failed", msg);
+                    return;
                 }
+
+                const pactime = Math.floor(dt.getTime() / 1000);
+
+                const res = libstmapi._SetBpactime(
+                    kpidx,
+                    bidx,
+		    pactime
+                );
+
+                if (res !== pactime) {
+                    node.error("STM-WRITE: SetBpactime failed ("+pactime+")", msg);
+                    return;
+                }
+
                 node.send(msg);
 
             } catch (err) {
@@ -123,4 +182,5 @@ module.exports = function (RED) {
     }
 
     RED.nodes.registerType("stm-write", STM_WRITE);
+
 };

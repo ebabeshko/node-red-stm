@@ -4,115 +4,138 @@
         color: "#edc6da",
         icon: "font-awesome/fa-pencil",
         defaults: {
-            name: {value:""},
-            kp: {value:"",required:true},
-            bn: {value:"", required: true},
-			val: {value:"", required: true},
+            name:   {value:""},
+            kp:     {value:"", required:true},
+            bn:     {value:"", required:true},
+            idx:  {value:""},
+            val:    {value:""}
         },
         inputs:1,
         outputs:1,
         label: function() {
-            return this.name||"stm write";
+            return this.name || "stm write";
         }
     });
 </script>
 
 <script type="text/html" data-template-name="stm-write">
+
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <label for="node-input-name">
+            <i class="fa fa-tag"></i> Name
+        </label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
+
     <div class="form-row">
-        <label for="node-input-kp"><i class="fa fa-link"></i> KP</label>
+        <label for="node-input-kp">
+            <i class="fa fa-link"></i> KP
+        </label>
         <input type="text" id="node-input-kp" placeholder="KP">
-    </div>  
+    </div>
+
     <div class="form-row">
-        <label for="node-input-bn"><i class="fa fa-tags"></i> Board</label>
+        <label for="node-input-bn">
+            <i class="fa fa-tags"></i> Board
+        </label>
         <input type="text" id="node-input-bn" placeholder="Board">
-    </div> 
+    </div>
+
     <div class="form-row">
-        <label for="node-input-val"><i class="fa fa-cog"></i> Values</label>
-        <input type="text" id="node-input-val" placeholder="Values">
-    </div> 		
+        <label for="node-input-idx">
+            <i class="fa fa-hashtag"></i> Signal
+        </label>
+        <input type="text" id="node-input-idx" placeholder="1">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-val">
+            <i class="fa fa-bolt"></i> Value
+        </label>
+        <input type="text" id="node-input-val"
+               placeholder="Value">
+    </div>
+
 </script>
 
 <script type="text/html" data-help-name="stm-write">
 
-    <p>
-        Writes data to the board of KP.
-    </p>
+<p>
+    Writes value to the configured signal.
+</p>
 
-    <h3>Node Properties</h3>
+<h3>Configuration</h3>
 
-    <dl class="message-properties">
+<dl class="message-properties">
 
-        <dt>KP
-            <span class="property-type">number</span>
-        </dt>
-        <dd>
-            Default KP number. Can be overridden by <code>msg.payload.kp</code>.
-        </dd>
+    <dt>KP
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        KP number.
+    </dd>
 
-        <dt>Board
-            <span class="property-type">number</span>
-        </dt>
-        <dd>
-            Default board number. Can be overridden by <code>msg.payload.bn</code>.
-        </dd>
+    <dt>Board
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        Board number.
+    </dd>
 
-        <dt>Values
-            <span class="property-type">comma separated numbers</span>
-        </dt>
-        <dd>
-            Default values written to the board when <code>msg.payload.value</code> is not supplied.
-        </dd>
+    <dt>Signal
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        Signal Index. If not specified, 1 is used
+    </dd>
 
-    </dl>
+    <dt>Value
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        Value written when no value is supplied in the message.
+    </dd>
 
-    <h3>Input</h3>
+</dl>
 
-    <dl class="message-properties">
+<h3>Input</h3>
 
-        <dt>msg.payload.kp
-            <span class="property-type">number</span>
-        </dt>
-        <dd>
-            Optional KP number. Overrides the configured KP.
-        </dd>
+<dl class="message-properties">
 
-        <dt>msg.payload.bn
-            <span class="property-type">number</span>
-        </dt>
-        <dd>
-            Optional board number. Overrides the configured Board.
-        </dd>
+    <dt>msg.payload.kp
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        Overrides the configured KP.
+    </dd>
 
-        <dt>msg.payload.value
-            <span class="property-type">number</span>
-        </dt>
-        <dd>
-            A single 32-bit integer value to be written.
-        </dd>
+    <dt>msg.payload.bn
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        Overrides the configured Board.
+    </dd>
 
-    </dl>
+    <dt>msg.payload.idx
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        Overrides the configured Signal.
+    </dd>
 
-    <h3>Output</h3>
+    <dt>msg.payload.value
+        <span class="property-type">number</span>
+    </dt>
+    <dd>
+        Overrides the configured Value.
+    </dd>
 
-    <p>
-        The original message is passed through unchanged.
-    </p>
+</dl>
 
-    <h3>Errors</h3>
+<h3>Output</h3>
 
-    <p>
-        The node reports errors if:
-    </p>
-
-    <ul>
-        <li>the STM data source cannot be attached;</li>
-        <li><code>msg.payload</code> is invalid;</li>
-        <li>the STM API returns an error code;</li>
-        <li>an unexpected exception occurs during processing.</li>
-    </ul>
+<p>
+    The original message is passed through unchanged.
+</p>
 
 </script>
