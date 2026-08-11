@@ -6,51 +6,116 @@
         defaults: {
             name: {value:""},
             address: {value:"",required:true},
-            diagobject: {value:"Port", required: true}
+            diagobject: {value:"Port", required:true},
+            showportnumber: {value:false},
+            showportstatus: {value:false}
         },
         inputs:1,
         outputs:1,
+        oneditprepare: function() {
+            function updateShowVisibility() {
+                if ($("#node-input-diagobject").val() === "Port") {
+                    $("#stm-diag-show").show();
+                } else {
+                    $("#stm-diag-show").hide();
+                }
+            }
+            $("#node-input-diagobject").on("change", updateShowVisibility);
+            updateShowVisibility();
+        },
         label: function() {
-            return this.name||"stm diag";
+            return this.name || "stm diag";
         }
     });
 </script>
-
 <script type="text/html" data-template-name="stm-diag">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <label for="node-input-name">
+            <i class="fa fa-tag"></i> Name
+        </label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-address"><i class="fa fa-link"></i> Address</label>
+        <label for="node-input-address">
+            <i class="fa fa-link"></i> Address
+        </label>
         <input type="text" id="node-input-address" placeholder="Address">
-    </div>  
-	<div class="form-row">
-		<label for="node-input-diagobject"><i class="fa fa-hdd-o"></i> Type</label>
-		<select type="text" id="node-input-diagobject" placeholder="Type">
-			<option value="Port">Port</option>
-			<option value="Device">Device</option>
-		</select>
-	</div>
+    </div>
+    <div class="form-row">
+        <label for="node-input-diagobject">
+            <i class="fa fa-hdd-o"></i> Type
+        </label>
+        <select id="node-input-diagobject">
+            <option value="Port">Port</option>
+            <option value="Device">Device</option>
+        </select>
+    </div>
+    <div class="form-row" id="stm-diag-show">
+        <label>
+            <i class="fa fa-sign-out"></i> Show
+        </label>
+        <div style="display:inline-block; vertical-align:top;">
+            <div style="margin-bottom:5px;">
+                <input type="checkbox" id="node-input-showportnumber" style="width:auto; margin:0 5px 0 0;">
+                <span>port number</span>
+            </div>
+            <div>
+                <input type="checkbox" id="node-input-showportstatus" style="width:auto; margin:0 5px 0 0;">
+                <span>port status</span>
+            </div>
+        </div>
+    </div>
 </script>
-
 <script type="text/html" data-help-name="stm-diag">
-   <p>Returns port / device status.</p>
-   <h3>Node Properties</h3>
-       <dl class="message-properties">
-       <dt>Address
-           <span class="property-type">number</span>
-       </dt>
-        <dd> Port # or Device Address</dd>
-       <dt>Type
-           <span class="property-type">Port / Device</span>
-       </dt>
-        <dd>Port or Device</dd>
- <h3>Outputs</h3>
-     <ol class="node-ports">
-             <dl class="message-properties">
-                 <dt>payload <span class="property-type">boolean</span></dt>
-                 <dd>Online status of port or device</dd>
-             </dl>
-     </ol>
+    <p>Checks the online status of an STM port or device. For ports, the node also returns the current communication status.</p>
+    <h3>Node Properties</h3>
+    <dl class="message-properties">
+        <dt>Address <span class="property-type">number</span></dt>
+        <dd>Port number or device address, depending on the selected Type.</dd>
+        <dt>Type <span class="property-type">Port / Device</span></dt>
+        <dd><b>Port</b> : checks the STM port status and returns its communication status.<br><b>Device</b> : checks whether the specified STM device is online.</dd>
+        <dt>Show <span class="property-type">Port only</span></dt>
+        <dd>Controls what information is displayed in the node status. This option is available only when Type is set to <b>Port</b>.
+            <ul>
+                <li><b>port number</b> : displays the port number.</li>
+                <li><b>port status</b> : displays the textual communication status.</li>
+            </ul>
+        </dd>
+    </dl>
+    <h3>Outputs</h3>
+    <h4>Port</h4>
+    <dl class="message-properties">
+        <dt>msg.payload <span class="property-type">boolean</span></dt>
+        <dd><code>true</code> if the port is online, <code>false</code> otherwise.</dd>
+        <dt>msg.portstatus <span class="property-type">number</span></dt>
+        <dd>Current STM port communication status:
+            <ul>
+                <li><code>-1</code> : OFF</li>
+                <li><code>0</code> : Rx...</li>
+                <li><code>1</code> : Opening...</li>
+                <li><code>2</code> : Connecting...</li>
+                <li><code>3</code> : Tx...</li>
+                <li><code>4</code> : Closing...</li>
+                <li><code>6</code> : Port Error</li>
+                <li><code>7</code> : Configuration Error</li>
+            </ul>
+            When the port is offline, <code>msg.portstatus</code> is <code>-1</code>.
+        </dd>
+    </dl>
+    <h4>Device</h4>
+    <dl class="message-properties">
+        <dt>msg.payload <span class="property-type">boolean</span></dt>
+        <dd><code>true</code> if the device is online, <code>false</code> otherwise.</dd>
+    </dl>
+    <h3>Node Status</h3>
+    <p>When enabled for a Port, the node displays the selected information below the node.</p>
+    <p>The status color indicates the current communication state:</p>
+    <ul>
+        <li><b>green</b> : Rx... or Tx...</li>
+        <li><b>grey</b> : OFF, Opening..., Connecting..., Closing...</li>
+        <li><b>red</b> : Port Error or Configuration Error</li>
+    </ul>
+    <h3>Logging</h3>
+    <p>Port communication status changes are logged only when the status changes.</p>
+    <p><code>Rx...</code> and <code>Tx...</code> status changes are logged with <code>info</code> level. Other status changes are logged with <code>warn</code> level.</p>
 </script>
