@@ -46,6 +46,7 @@ node.on('input', function(msg) {
                     msg.payload = libstmapi._IsPortOn(p);
                     msg.portstatus = msg.payload ? libstmapi._GetPortStat(p, 4) : -1;
 
+                    // Текстовий статус
                     const statusText = {
                         "-1": "OFF",
                         "0": "Rx...",
@@ -62,6 +63,7 @@ node.on('input', function(msg) {
                     const currentStatus = msg.portstatus;
                     const currentText = statusText[String(currentStatus)] ?? "Unknown";
 
+                    // Статус ноди тільки якщо увімкнено Show in node status
                     if (config.showportnumber || config.showportstatus) {
                         let fill = "grey";
 
@@ -92,13 +94,15 @@ node.on('input', function(msg) {
                         });
                     }
 
+                    // Попередній стан
                     const previousStatus = nodeContext.get("portstatus");
 
+                    // Лог тільки при зміні
                     if (previousStatus !== currentStatus) {
                         if (previousStatus !== undefined) {
 
                             if (currentStatus === 0 || currentStatus === 3) {
-                                node.info(
+                                node.log(
                                     "Port " + config.address +
                                     ": " + currentText
                                 );
