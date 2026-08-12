@@ -27,12 +27,12 @@
         <input type="text" id="node-input-kp" placeholder="KP">
     </div>   
     <div class="form-row">
-        <label for="node-input-bn"><i class="fa fa-tags"></i> Board</label>
-        <input type="text" id="node-input-bn" placeholder="Board">
+        <label for="node-input-bn"><i class="fa fa-tags"></i> Block</label>
+        <input type="text" id="node-input-bn" placeholder="Block">
     </div>  
 	<div class="form-row">
-		<label for="node-input-btype"><i class="fa fa-ticket"></i> Board Type</label>
-		<select type="text" id="node-input-btype" placeholder="Board Type">
+		<label for="node-input-btype"><i class="fa fa-ticket"></i> Block Type</label>
+		<select type="text" id="node-input-btype" placeholder="Block Type">
 			<option value="TI">TI</option>
 			<option value="TS">TS</option>
 		</select>
@@ -41,7 +41,7 @@
 
 <script type="text/html" data-help-name="stm">
     <p>
-        Reads data from the board.
+        Reads data from the block.
     </p>
 
     <h3>Node Properties</h3>
@@ -49,16 +49,16 @@
         <dt>KP
             <span class="property-type">number</span>
         </dt>
-        <dd>Station (KP) number.</dd>
+        <dd>Device (KP) number.</dd>
 
-        <dt>Board
+        <dt>Block
            <span class="property-type">TI / TS</span>
 	</dt>
-        <dd>Board number to read.</dd>
+        <dd>Block number to read.</dd>
 
-        <dt>Board Type</dt>
+        <dt>Block Type</dt>
         <dd>
-            Type of the board:
+            Type of the block:
             <ul>
                 <li><b>TI</b> - Analog</li>
                 <li><b>TS</b> - Digital</li>
@@ -68,7 +68,7 @@
 
     <h3>Input</h3>
     <p>
-        Any incoming message triggers reading of the configured STM board.
+        Any incoming message triggers reading of the configured STM block.
     </p>
 
     <p>
@@ -84,9 +84,9 @@
 
         <dt>valid <span class="property-type">any</span></dt>
         <dd>
-            If this property exists, the node checks data validity in the board and adds
+            If this property exists, the node checks data validity in the block and adds
             <code>msg.valid</code> to the output message.
-            If board is offline, no message is sent.
+            If block is offline, no message is sent.
         </dd>
     </dl>
 
@@ -95,7 +95,7 @@
     <dl class="message-properties">
         <dt>payload <span class="property-type">array</span></dt>
         <dd>
-            Array containing all values read from the STM board.
+            Array containing all values read from the STM block.
         </dd>
 
         <dt class="optional">sysno <span class="property-type">number</span></dt>
@@ -105,18 +105,18 @@
 
         <dt class="optional">valid <span class="property-type">boolean</span></dt>
         <dd>
-            Board status (only if requested).
+            Block status (only if requested).
         </dd>
     </dl>
 
     <h3>Details</h3>
     <p>
         The node automatically connects to the STM data source, reads the
-        configured board, and disconnects after the operation completes.
+        configured block, and disconnects after the operation completes.
     </p>
 
     <p>
-        The returned array element type depends on the STM board type:
+        The returned array element type depends on the STM block type:
         unsigned integer, signed integer or floating-point values.
     </p>
 
