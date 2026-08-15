@@ -8,7 +8,8 @@
             address: {value:"",required:true},
             diagobject: {value:"Port", required:true},
             showportnumber: {value:false},
-            showportstatus: {value:false}
+            showportstatus: {value:false},
+            writetolog: {value:false}
         },
         inputs:1,
         outputs:1,
@@ -22,6 +23,22 @@
             }
             $("#node-input-diagobject").on("change", updateShowVisibility);
             updateShowVisibility();
+            var tabs = RED.tabs.create({
+                id: "node-input-tabs",
+                onchange: function(tab) {
+                    $(".stm-diag-tab-content").hide();
+                    $("#" + tab.id).show();
+                }
+            });
+            tabs.addTab({
+                id: "stm-diag-tab-settings",
+                label: "Settings"
+            });
+            tabs.addTab({
+                id: "stm-diag-tab-optionals",
+                label: "Optionals"
+            });
+            $("#stm-diag-tab-settings").show();
         },
         label: function() {
             return this.name || "stm diag";
@@ -30,39 +47,52 @@
 </script>
 <script type="text/html" data-template-name="stm-diag">
     <div class="form-row">
-        <label for="node-input-name">
-            <i class="fa fa-tag"></i> Name
-        </label>
-        <input type="text" id="node-input-name" placeholder="Name">
+        <ul style="min-width: 600px; margin-bottom: 20px;" class="red-ui-tabs" id="node-input-tabs"></ul>
     </div>
-    <div class="form-row">
-        <label for="node-input-address">
-            <i class="fa fa-link"></i> Address
-        </label>
-        <input type="text" id="node-input-address" placeholder="Address">
-    </div>
-    <div class="form-row">
-        <label for="node-input-diagobject">
-            <i class="fa fa-hdd-o"></i> Type
-        </label>
-        <select id="node-input-diagobject">
-            <option value="Port">Port</option>
-            <option value="Device">Device</option>
-        </select>
-    </div>
-    <div class="form-row" id="stm-diag-show">
-        <label>
-            <i class="fa fa-sign-out"></i> Show
-        </label>
-        <div style="display:inline-block; vertical-align:top;">
-            <div style="margin-bottom:5px;">
-                <input type="checkbox" id="node-input-showportnumber" style="width:auto; margin:0 5px 0 0;">
-                <span>port number</span>
+    <div id="stm-diag-tab-settings" class="stm-diag-tab-content">
+        <div class="form-row">
+            <label for="node-input-name">
+                <i class="fa fa-tag"></i> Name
+            </label>
+            <input type="text" id="node-input-name" placeholder="Name">
+        </div>
+        <div class="form-row">
+            <label for="node-input-address">
+                <i class="fa fa-link"></i> Address
+            </label>
+            <input type="text" id="node-input-address" placeholder="Address">
+        </div>
+        <div class="form-row">
+            <label for="node-input-diagobject">
+                <i class="fa fa-hdd-o"></i> Type
+            </label>
+            <select id="node-input-diagobject">
+                <option value="Port">Port</option>
+                <option value="Device">Device</option>
+            </select>
+        </div>
+        <div class="form-row" id="stm-diag-show">
+            <label>
+                <i class="fa fa-sign-out"></i> Show
+            </label>
+            <div style="display:inline-block; vertical-align:top;">
+                <div style="margin-bottom:5px;">
+                    <input type="checkbox" id="node-input-showportnumber" style="width:auto; margin:0 5px 0 0;">
+                    <span>port number</span>
+                </div>
+                <div>
+                    <input type="checkbox" id="node-input-showportstatus" style="width:auto; margin:0 5px 0 0;">
+                    <span>port status</span>
+                </div>
             </div>
-            <div>
-                <input type="checkbox" id="node-input-showportstatus" style="width:auto; margin:0 5px 0 0;">
-                <span>port status</span>
-            </div>
+        </div>
+    </div>
+    <div id="stm-diag-tab-optionals" class="stm-diag-tab-content" style="display:none;">
+        <div class="form-row">
+            <label for="node-input-writetolog">
+                <i class="fa fa-file-text-o"></i> Write to log
+            </label>
+            <input type="checkbox" id="node-input-writetolog" style="width:auto;">
         </div>
     </div>
 </script>
@@ -116,6 +146,6 @@
         <li><b>red</b> : Port Error or Configuration Error</li>
     </ul>
     <h3>Logging</h3>
-    <p>Port communication status changes are logged only when the status changes.</p>
+    <p>Port communication status changes are logged only when the status changes and Write to log is checked.</p>
     <p><code>Rx...</code> and <code>Tx...</code> status changes are logged with <code>info</code> level. Other status changes are logged with <code>warn</code> level.</p>
 </script>

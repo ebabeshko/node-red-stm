@@ -94,7 +94,7 @@ node.on('input', function(msg) {
 
                     const previousStatus = nodeContext.get("portstatus");
 
-                    if (previousStatus !== currentStatus) {
+                    if (config.writetolog && (previousStatus !== currentStatus)) {
                         if (previousStatus !== undefined) {
 
                             if (currentStatus === 0 || currentStatus === 3) {
