@@ -36,7 +36,7 @@ module.exports = function (RED) {
 
             try {
 
-                var kpn = config.kp;
+                var kpn = (config.kp << 16) >> 16;
                 var bn = config.bn;
                 var btype = (config.btype === 'TS' ? 1 : 0);
 
@@ -127,10 +127,7 @@ module.exports = function (RED) {
                         node.send(msg);
                     }
                 }
-            } catch (err) {
 
-                node.error("STM Exception: " + err.message, msg);
-           
             } finally {
                 libstmapi._DetachDataSource();
             }

@@ -75,6 +75,8 @@ module.exports = function (RED) {
                     payload.hasOwnProperty("kp") ? payload.kp : config.kp
                 );
 
+                kpn =(kpn << 16) >> 16;
+
                 const bn = parseInt(
                     payload.hasOwnProperty("bn") ? payload.bn : config.bn
                 );
